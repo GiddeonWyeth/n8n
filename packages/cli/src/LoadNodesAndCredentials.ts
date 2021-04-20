@@ -22,8 +22,8 @@ import {
 	readdir as fsReaddir,
 	readFile as fsReadFile,
 	stat as fsStat,
- } from 'fs/promises';
-import * as glob from 'glob-promise';
+} from 'fs/promises';
+import * as fg from 'fast-glob';
 import * as path from 'path';
 
 const CUSTOM_NODES_CATEGORY = 'Custom Nodes';
@@ -264,7 +264,7 @@ class LoadNodesAndCredentialsClass {
 	 * @returns {Promise<void>}
 	 */
 	async loadDataFromDirectory(setPackageName: string, directory: string): Promise<void> {
-		const files = await glob(path.join(directory, '**/*\.@(node|credentials)\.js'));
+		const files = await fg(path.join(directory, '**/*\.@(node|credentials)\.js'));
 
 		let fileName: string;
 		let type: string;

@@ -21,7 +21,7 @@ import {
 } from 'n8n-workflow';
 
 import * as fs from 'fs';
-import * as glob from 'glob-promise';
+import * as fg from 'fast-glob';
 import * as path from 'path';
 
 export class ImportCredentialsCommand extends Command {
@@ -76,7 +76,7 @@ export class ImportCredentialsCommand extends Command {
 			}
 
 			if (flags.separate) {
-				const files = await glob((flags.input.endsWith(path.sep) ? flags.input : flags.input + path.sep) + '*.json');
+				const files = await fg((flags.input.endsWith(path.sep) ? flags.input : flags.input + path.sep) + '*.json');
 				for (i = 0; i < files.length; i++) {
 					const credential = JSON.parse(fs.readFileSync(files[i], { encoding: 'utf8' }));
 
