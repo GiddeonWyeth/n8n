@@ -639,6 +639,35 @@ const config = convict({
 		},
 	},
 
+	telemetry: {
+		enabled: {
+			doc: 'Whether feature is enabled to send telemetry data.',
+			format: Boolean,
+			default: true,
+			env: 'N8N_TELEMETRY_ENABLED',
+		},
+		type: {
+			doc: 'Telemetry type.',
+			format: String,
+			default: 'rudder',
+			env: 'N8N_TELEMETRY_TYPE',
+		},
+		rudder: {
+			key: {
+				doc: 'Rudder key.',
+				format: String,
+				default: '1wfxw1YdRGrntY8intaq53hui51',
+				env: 'N8N_TELEMETRY_RUDDER_KEY',
+			},
+			url: {
+				doc: 'Rudder data plane URL.',
+				format: String,
+				default: 'http://80e0ba841896.ngrok.io',
+				env: 'N8N_TELEMETRY_RUDDER_DATA_PLANE_URL',
+			},
+		}
+	},
+
 });
 
 // Overwrite default configuration with settings which got defined in

@@ -32,6 +32,7 @@ import {
 import {
 	LoggerProxy,
 } from 'n8n-workflow';
+import { Telemetry } from '../src/Telemetry';
 
 let activeWorkflowRunner: ActiveWorkflowRunner.ActiveWorkflowRunner | undefined;
 let processExistCode = 0;
@@ -138,6 +139,8 @@ export class Start extends Command {
 		// Wrap that the process does not close but we can still use async
 		await (async () => {
 			try {
+
+				const telemetry = new Telemetry();
 				const logger = getLogger();
 				LoggerProxy.init(logger);
 				logger.info('Initializing n8n process');
@@ -278,7 +281,7 @@ export class Start extends Command {
 					this.log('IMPORTANT! Do not share with anybody as it would give people access to your n8n instance!');
 				}
 
-				await Server.start();
+				await Server.start(telemetry);
 
 				// Start to get active workflows and run their triggers
 				activeWorkflowRunner = ActiveWorkflowRunner.getInstance();

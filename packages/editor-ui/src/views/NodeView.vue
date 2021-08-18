@@ -112,6 +112,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { AnalyticsPlugin } from '../plugins/analytics';
 import {
 	OverlaySpec,
 } from 'jsplumb';
@@ -2203,6 +2204,7 @@ export default mixins(
 				this.$store.commit('setOauthCallbackUrls', settings.oauthCallbackUrls);
 				this.$store.commit('setN8nMetadata', settings.n8nMetadata || {});
 				this.$store.commit('versions/setVersionNotificationSettings', settings.versionNotifications);
+				this.$store.commit('setAnalytics', settings.analytics);
 			},
 			async loadNodeTypes (): Promise<void> {
 				const nodeTypes = await this.restApi().getNodeTypes();
@@ -2261,6 +2263,8 @@ export default mixins(
 				return;
 			}
 
+			Vue.use(AnalyticsPlugin , this.$store.getters.analytics);
+
 			this.instance.ready(async () => {
 				try {
 					this.initNodeView();
@@ -2276,6 +2280,7 @@ export default mixins(
 			});
 
 			this.$externalHooks().run('nodeView.mount');
+			this.$analytics.track('nodeView.mount');
 		},
 
 		destroyed () {

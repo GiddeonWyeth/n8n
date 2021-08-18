@@ -118,6 +118,7 @@ import * as TagHelpers from './TagHelpers';
 import { TagEntity } from './databases/entities/TagEntity';
 import { WorkflowEntity } from './databases/entities/WorkflowEntity';
 import { WorkflowNameRequest } from './WorkflowHelpers';
+import { Telemetry } from './Telemetry';
 
 class App {
 
@@ -146,8 +147,9 @@ class App {
 	payloadSizeMax: number;
 
 	presetCredentialsLoaded: boolean;
+	telemetry: Telemetry;
 
-	constructor() {
+	constructor(telemetry: Telemetry) {
 		this.app = express();
 
 		this.endpointWebhook = config.get('endpoints.webhook') as string;
@@ -175,11 +177,26 @@ class App {
 		this.sslCert = config.get('ssl_cert');
 
 		this.externalHooks = ExternalHooks();
+		this.telemetry = telemetry;
 
 		this.presetCredentialsLoaded = false;
 		this.endpointPresetCredentials = config.get('credentials.overwrite.endpoint') as string;
 
 		const urlBaseWebhook = WebhookHelpers.getWebhookBaseUrl();
+
+		let telemetrySettings: IDataObject = {};
+
+		if(config.get('telemetry.enabled') as boolean) {
+			telemetrySettings.enabled = true;
+			telemetrySettings.type = config.get('telemetry.type') as string;
+			if(telemetrySettings.type) {
+				telemetrySettings.config = config.get(`telemetry.${telemetrySettings.type}`) as object;
+			}
+		}
+
+		if(!telemetrySettings.type) {
+			telemetrySettings = {};
+		}
 
 		this.frontendSettings = {
 			endpointWebhook: this.endpointWebhook,
@@ -202,6 +219,7 @@ class App {
 				infoUrl: config.get('versionNotifications.infoUrl'),
 			},
 			instanceId: '',
+			analytics: telemetrySettings,
 		};
 	}
 
@@ -439,7 +457,7 @@ class App {
 		if (process.env['NODE_ENV'] !== 'production') {
 			this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
 				// Allow access also from frontend when developing
-				res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+				res.header('Access-Control-Allow-Origin', '*');
 				res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 				res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, sessionid');
 				next();
@@ -1459,6 +1477,7 @@ class App {
 
 			await this.externalHooks.run('oauth2.authenticate', [oAuthOptions]);
 
+
 			const oAuthObj = new clientOAuth2(oAuthOptions);
 
 			// Encrypt the data
@@ -2158,11 +2177,11 @@ class App {
 
 }
 
-export async function start(): Promise<void> {
+export async function start(telemetry: Telemetry): Promise<void> {
 	const PORT = config.get('port');
 	const ADDRESS = config.get('listen_address');
 
-	const app = new App();
+	const app = new App(telemetry);
 
 	await app.config();
 

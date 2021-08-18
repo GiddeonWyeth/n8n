@@ -88,6 +88,7 @@ const state: IRootState = {
 	},
 	sidebarMenuItems: [],
 	instanceId: '',
+	analytics: {},
 };
 
 const modules = {
@@ -552,6 +553,9 @@ export const store = new Vuex.Store({
 		setInstanceId(state, instanceId: string) {
 			Vue.set(state, 'instanceId', instanceId);
 		},
+		setAnalytics(state, analytics: IDataObject) {
+			Vue.set(state, 'analytics', analytics);
+		},
 		setOauthCallbackUrls(state, urls: IDataObject) {
 			Vue.set(state, 'oauthCallbackUrls', urls);
 		},
@@ -702,6 +706,9 @@ export const store = new Vuex.Store({
 		},
 		versionCli: (state): string => {
 			return state.versionCli;
+		},
+		analytics: (state): IDataObject => {
+			return state.analytics;
 		},
 		oauthCallbackUrls: (state): object => {
 			return state.oauthCallbackUrls;

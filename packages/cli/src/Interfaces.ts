@@ -338,6 +338,7 @@ export interface IN8nUISettings {
 	};
 	versionNotifications: IVersionNotificationSettings;
 	instanceId: string;
+	analytics: IDataObject;
 }
 
 export interface IPackageVersions {

@@ -471,6 +471,7 @@ export interface IN8nUISettings {
 	};
 	versionNotifications: IVersionNotificationSettings;
 	instanceId: string;
+	analytics: IDataObject;
 }
 
 export interface IWorkflowSettings extends IWorkflowSettingsWorkflow {
@@ -615,6 +616,7 @@ export interface IRootState {
 	workflow: IWorkflowDb;
 	sidebarMenuItems: IMenuItem[];
 	instanceId: string;
+	analytics: IDataObject;
 }
 
 export interface ITagsState {
